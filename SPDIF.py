@@ -57,6 +57,7 @@ class SPDIF:
         """cleanly back out and release sound card."""
         self.p.close(self.inStream)
         self.threadDieNow = True
+        self.tR._Thread__stop()
    
     def readSignal(self):                                   #SPDIF        
         """
@@ -325,6 +326,7 @@ class I2C:
         if self.OpenPort:    
             self.ser.close()
         self.threadDieNow = True
+        self.tI2C._Thread__stop()
         
 #==============================================================================
 # MAIN
