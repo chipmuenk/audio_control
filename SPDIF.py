@@ -33,7 +33,7 @@ class SPDIF:
         self.RATE=44100
         self.BUFFERSIZE=1024
         self.secToRecord=.001
-        self.threadsDieNow=False
+        self.threadDieNow=False
         self.newAudio=False
         self.bThreadStarted=False
         
@@ -56,8 +56,9 @@ class SPDIF:
     def close(self):                                        #SPDIF
         """cleanly back out and release sound card."""
         self.p.close(self.inStream)
+        self.threadDieNow = True
    
-    def ReadSignal(self):                                   #SPDIF        
+    def readSignal(self):                                   #SPDIF        
         """
         lese Audio Signal vom Audio Device ein
         """        
@@ -71,9 +72,9 @@ class SPDIF:
         """
         while True:
             self.lock.acquire()
-            if self.threadsDieNow: break
+            if self.threadDieNow: break
             for i in range(self.chunksToRecord):
-                self.audio[i*self.BUFFERSIZE:(i+1)*self.BUFFERSIZE]=self.ReadSignal()
+                self.audio[i*self.BUFFERSIZE:(i+1)*self.BUFFERSIZE]=self.readSignal()
             self.newAudio=True 
             if forever==False: break
             self.lock.release()
@@ -151,7 +152,7 @@ class SPDIF:
 #        self.comboBoxAudioOut.addItems(deviceList)        
         
         
-    def PlotSignal(self):        
+    def plotSignal(self):        
         """
         Gibt das vom Audio Device eingelsesene Signal als Plot in die GUI aus
         """
@@ -170,6 +171,7 @@ class I2C:
         """
         self.BAUDRATE = 115200                          # Einstellungen des ELV USB/I2C Interface gemaess Bedienungsanleitung
         self.OpenPort = False
+        self.threadDieNow=False
         uiplot.comboBox_Abfragerate.addItem(str(0.01))
         uiplot.comboBox_Abfragerate.addItem(str(0.1))
         uiplot.comboBox_Abfragerate.addItem(str(1.0))
@@ -237,6 +239,7 @@ class I2C:
         while True:
             self.cond.acquire()
             self.cond.wait(float(uiplot.comboBox_Abfragerate.currentText()))
+            if self.threadDieNow: break
             if self.OpenPort:
                 self.ser.write('sbedapsbf09p')
                 print("Anforderung Daten")
@@ -315,6 +318,14 @@ class I2C:
         uiplot.lcdNumber_Temperatur.display(1860)
         uiplot.lcdNumber_Vcc.display(1860)
         
+    def close(self):
+        """
+        Serielle Schnittstelle schliessen und Thread beenden
+        """
+        if self.OpenPort:    
+            self.ser.close()
+        self.threadDieNow = True
+        
 #==============================================================================
 # MAIN
 #==============================================================================
@@ -338,7 +349,7 @@ if __name__ == '__main__':
     uiplot.timer = QtCore.QTimer()
     uiplot.timer.start(1.0)
     
-    win_plot.connect(uiplot.timer, QtCore.SIGNAL('timeout()'), s.PlotSignal)
+    win_plot.connect(uiplot.timer, QtCore.SIGNAL('timeout()'), s.plotSignal)
         
     s.setupAudio()
     s.setup()
@@ -347,7 +358,7 @@ if __name__ == '__main__':
     
     win_plot.show()
     
-    code = app.exec_()
+    code = app.exec_()          # Beenden des Programms
     s.close()
-    bus.ser.close()
+    bus.close()
     sys.exit(code)
