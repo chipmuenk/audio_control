@@ -56,6 +56,7 @@ class SPDIF:
         """cleanly back out and release sound card."""
         self.p.close(self.inStream)
         self.threadDieNow = True
+        self.tR._Thread__stop()
    
     def readSignal(self):                                   #SPDIF        
         """
@@ -286,7 +287,16 @@ class I2C:
         schreibt die Auswahl der Volume auf I2C
         """
         if self.OpenPort:
-            data = str(uiplot.horizontalSlider_Volume.value())
+            ivalue = uiplot.horizontalSlider_Volume.value()*5
+            str_value_hex = str(hex(ivalue))
+            if ivalue > 250:
+                print("Ungueltiger Wert")
+            elif ivalue >= 20:                 
+                data = str_value_hex[2] + str_value_hex[3]
+            else:
+                data = '0' + str_value_hex[2]
+                            
+            print("Daten:", data)
             self.ser.write(I2C_Daten.VOLUME + data + 'p')                    #TODO auslagern
         else:
             print("COM nicht offen")
@@ -327,6 +337,7 @@ class I2C:
         if self.OpenPort:    
             self.ser.close()
         self.threadDieNow = True
+        self.tI2C._Thread__stop()
         
 #==============================================================================
 # MAIN

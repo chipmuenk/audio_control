@@ -381,13 +381,13 @@
     </rect>
    </property>
    <property name="maximum">
-    <number>100</number>
+    <number>50</number>
    </property>
    <property name="singleStep">
     <number>1</number>
    </property>
    <property name="pageStep">
-    <number>5</number>
+    <number>1</number>
    </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
@@ -420,25 +420,6 @@
      <width>81</width>
      <height>22</height>
     </rect>
-   </property>
-  </widget>
-  <widget class="QScrollBar" name="horizontalScrollBar_Volume">
-   <property name="geometry">
-    <rect>
-     <x>410</x>
-     <y>820</y>
-     <width>160</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="maximum">
-    <number>100</number>
-   </property>
-   <property name="singleStep">
-    <number>5</number>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
    </property>
   </widget>
  </widget>
