@@ -12,15 +12,14 @@ from PyQt4 import QtGui, QtCore
 #import os
 import PyQt4.Qwt5 as Qwt
 
-import GUI_SPDIF
+import GUI_SPDIF, I2C_Daten
 
 #==============================================================================
 # PYTHON IMPORTS
 #==============================================================================
 import sys, pyaudio, numpy, threading, serial
 
-#from recorder import *
-#import matplotlib
+
 
 #==============================================================================
 # DEFINES
@@ -242,9 +241,9 @@ class I2C:
             self.cond.wait(float(uiplot.comboBox_Abfragerate.currentText()))
             if self.threadDieNow: break
             if self.OpenPort:
-                self.ser.write('sbedapsbf09p')
-                print("Anforderung Daten")
-                print(uiplot.horizontalSlider_Volume.value())
+                
+                print("Anforderung Daten")#
+                print(uiplot.horizontalSlider_Volume.value())#
                 self.readI2C()
             else:
                 print("COM Port nicht geoeffnet")
@@ -270,7 +269,7 @@ class I2C:
         schreibt die Auswahl MUX1 auf I2C
         """
         if self.OpenPort:
-            self.ser.write('sbe1501p')
+            self.ser.write(I2C_Daten.MUX1)                  #TODO auslagern
         else:
             print("COM nicht offen")
  
@@ -279,7 +278,7 @@ class I2C:
         schreibt die Auswahl MUX2 auf I2C
         """
         if self.OpenPort:       
-            self.ser.write('sbe1502p')                   
+            self.ser.write(I2C_Daten.MUX2)                  #TODO auslagern 
         else:
             print("COM nicht offen")
             
@@ -288,8 +287,17 @@ class I2C:
         schreibt die Auswahl der Volume auf I2C
         """
         if self.OpenPort:
-            data = str(uiplot.horizontalSlider_Volume.value())
-            self.ser.write('sbe2a'+data+'p')           
+            ivalue = uiplot.horizontalSlider_Volume.value()*5
+            str_value_hex = str(hex(ivalue))
+            if ivalue > 250:
+                print("Ungueltiger Wert")
+            elif ivalue >= 20:                 
+                data = str_value_hex[2] + str_value_hex[3]
+            else:
+                data = '0' + str_value_hex[2]
+                            
+            print("Daten:", data)
+            self.ser.write(I2C_Daten.VOLUME + data + 'p')                    #TODO auslagern
         else:
             print("COM nicht offen")
             
@@ -298,9 +306,12 @@ class I2C:
         liest die empfangenen Daten von I2C
         """
         print("Lese I2C")
+        self.ser.write(I2C_Daten.CYCLIC)  # TODO auslagern
         while self.ser.inWaiting() > 0:
             self.wert=self.ser.read(2)
             print(self.wert)            # gibt die eingelesenen Werte in der Konsole aus, solange "writeGUI" noch nicht existiert
+   
+                                       # TODO return implementieren
    
     def writeGUI(self, data):                           #I2C
         '''
