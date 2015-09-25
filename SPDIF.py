@@ -172,11 +172,13 @@ class I2C:
         self.BAUDRATE = 115200                          # Einstellungen des ELV USB/I2C Interface gemaess Bedienungsanleitung
         self.OpenPort = False
         self.threadDieNow=False
+        self.Kanal = 1
         uiplot.comboBox_Abfragerate.addItem(str(0.01))
         uiplot.comboBox_Abfragerate.addItem(str(0.1))
         uiplot.comboBox_Abfragerate.addItem(str(1.0))
         uiplot.comboBox_Abfragerate.addItem(str(2.0))
         uiplot.comboBox_Abfragerate.setCurrentIndex(3)
+        uiplot.radioButton_Kanal1.setChecked(1)
         uiplot.horizontalSlider_Volume.logicalDpiX()
         ValidComPorts = self.serialScan()
         if (len(ValidComPorts)) == 0:
@@ -262,6 +264,8 @@ class I2C:
         self.tI2C.start()
         QtGui.QDialog.connect(uiplot.radioButton_MUX1, QtCore.SIGNAL("clicked()"), self.sendMUX1)
         QtGui.QDialog.connect(uiplot.radioButton_MUX2, QtCore.SIGNAL("clicked()"), self.sendMUX2)
+        QtGui.QDialog.connect(uiplot.radioButton_Kanal1, QtCore.SIGNAL("clicked()"), lambda: self.auswahl_kanal(1))
+        QtGui.QDialog.connect(uiplot.radioButton_Kanal2, QtCore.SIGNAL("clicked()"), lambda: self.auswahl_kanal(2))
         QtGui.QDialog.connect(uiplot.horizontalSlider_Volume, QtCore.SIGNAL('valueChanged(int)'), self.sendVolume)
         
     def sendMUX1(self):                                 #I2C
@@ -269,18 +273,38 @@ class I2C:
         schreibt die Auswahl MUX1 auf I2C
         """
         if self.OpenPort:
-            self.ser.write(I2C_Daten.MUX1)                  #TODO auslagern
+            if self.Kanal == 1:
+                self.ser.write(I2C_Daten.MUX1_1)                  #TODO auslagern
+            elif self.Kanal == 2:
+                self.ser.write(I2C_Daten.MUX1_2)
+            else:
+                print("Kanal fehlerhaft")
         else:
             print("COM nicht offen")
+            print(self.Kanal)
  
     def sendMUX2(self):                                 #I2C
         """
         schreibt die Auswahl MUX2 auf I2C
         """
         if self.OpenPort:       
-            self.ser.write(I2C_Daten.MUX2)                  #TODO auslagern 
+            if self.Kanal == 1:
+                self.ser.write(I2C_Daten.MUX2_1)                  #TODO auslagern
+            elif self.Kanal == 2:
+                self.ser.write(I2C_Daten.MUX2_2)
+            else:
+                print("Kanal fehlerhaft") 
         else:
             print("COM nicht offen")
+            
+    def auswahl_kanal(self, kanal):
+        if kanal == 1:
+            self.Kanal = 1
+        elif kanal == 2:
+            self.Kanal = 2
+        else:
+            print("Kanal fehlerhaft")
+        
             
     def sendVolume(self):                               #I2C
         """
@@ -297,7 +321,12 @@ class I2C:
                 data = '0' + str_value_hex[2]
                             
             print("Daten:", data)
-            self.ser.write(I2C_Daten.VOLUME + data + 'p')                    #TODO auslagern
+            if self.Kanal == 1:
+                self.ser.write(I2C_Daten.VOLUME_1 + data + 'p')                    #TODO auslagern
+            elif self.Kanal == 2:
+                self.ser.write(I2C_Daten.VOLUME_2 + data + 'p')
+            else:
+                print("Kanal fehlerhaft")
         else:
             print("COM nicht offen")
             
@@ -305,8 +334,11 @@ class I2C:
         """
         liest die empfangenen Daten von I2C
         """
-        print("Lese I2C")
-        self.ser.write(I2C_Daten.CYCLIC)  # TODO auslagern
+        print("Lese I2C:", self.Kanal)
+        if self.Kanal == 1:
+            self.ser.write(I2C_Daten.CYCLIC_1)  # TODO auslagern
+        elif self.Kanal == 2:
+            self.ser.write(I2C_Daten.CYCLIC_2)
         while self.ser.inWaiting() > 0:
             self.wert=self.ser.read(2)
             print(self.wert)            # gibt die eingelesenen Werte in der Konsole aus, solange "writeGUI" noch nicht existiert
