@@ -12,7 +12,7 @@ from PyQt4 import QtGui, QtCore
 #import os
 import PyQt4.Qwt5 as Qwt
 
-import GUI_SPDIF, I2C_Daten
+import GUI_AudioControl, I2C_Daten
 
 #==============================================================================
 # PYTHON IMPORTS
@@ -377,8 +377,8 @@ class I2C:
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
     
-    win_plot = GUI_SPDIF.QtGui.QMainWindow()
-    uiplot = GUI_SPDIF.Ui_Dialog()
+    win_plot = GUI_AudioControl.QtGui.QMainWindow()
+    uiplot = GUI_AudioControl.Ui_MainWindow()
     uiplot.setupUi(win_plot)
     s = SPDIF()         # Instanz von SPDIF wird erzeugt
     bus = I2C()         # Instanz von I2C wird erzeugt
