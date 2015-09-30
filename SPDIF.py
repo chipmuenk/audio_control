@@ -18,7 +18,7 @@ import GUI_AudioControl, I2C_Daten
 # PYTHON IMPORTS
 #==============================================================================
 import sys, pyaudio, numpy, threading, serial
-
+import numpy as np
 
 
 #==============================================================================
@@ -335,22 +335,41 @@ class I2C:
         liest die empfangenen Daten von I2C
         """
         print("Lese I2C:", self.Kanal)
+        i = 0;
+        myList=[0 for j in range(9)]
+        #self.wert=[]
         if self.Kanal == 1:
             self.ser.write(I2C_Daten.CYCLIC_1)  # TODO auslagern
         elif self.Kanal == 2:
             self.ser.write(I2C_Daten.CYCLIC_2)
         while self.ser.inWaiting() > 0:
-            self.wert=self.ser.read(2)
-            print(self.wert)            # gibt die eingelesenen Werte in der Konsole aus, solange "writeGUI" noch nicht existiert
-   
+            myList[i]=self.ser.read(2)           
+            i = i + 1                                 
+        
+        self.writeGUI(myList)
                                        # TODO return implementieren
    
     def writeGUI(self, data):                           #I2C
         '''
-        hier entsteht die Funktion, die die vom I2C-Bus gelesenen Werte in die GUI ausgibt,
-        warte auf Anweisungen von Josef Klugbauer
+        I2C-Bus lesen, Werte in die GUI ausgeben     
         '''
-        pass
+        strV_in = str(data[1] + data[2])
+        #print(strV_in)
+        iV_in = int(strV_in, 16)
+        #print(iV_in)
+        uiplot.lcdNumber_Vcc.display(iV_in)
+        
+        strV_out = str(data[3] + data[4])
+        iV_out = int(strV_out, 16)
+        uiplot.lcdNumber_2_Ausgang.display(iV_out)
+        
+        strI = str(data[5])
+        iI = int(strI, 16)
+        uiplot.lcdNumber_Strom.display(iI)
+        
+        strTemp = str(data[6])
+        iTemp = int(strTemp, 16)
+        uiplot.lcdNumber_Temperatur.display(iTemp)
         
     
     def testGUI(self):
