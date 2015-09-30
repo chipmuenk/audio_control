@@ -118,7 +118,7 @@
               </size>
              </property>
              <property name="title">
-              <string>GroupBox</string>
+              <string/>
              </property>
              <layout class="QHBoxLayout" name="horizontalLayout_2">
               <item>
@@ -420,6 +420,25 @@
               <string/>
              </property>
              <layout class="QGridLayout" name="gridLayout_4">
+              <item row="1" column="2" colspan="2">
+               <widget class="QLCDNumber" name="lcdNumber_Temperatur">
+                <property name="maximumSize">
+                 <size>
+                  <width>75</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Plain</enum>
+                </property>
+                <property name="segmentStyle">
+                 <enum>QLCDNumber::Flat</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="2">
+               <widget class="QwtTextLabel" name="TextLabel"/>
+              </item>
               <item row="0" column="0">
                <widget class="QLabel" name="label_8">
                 <property name="minimumSize">
@@ -433,7 +452,20 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_13">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>50</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Volume</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
                <widget class="QLCDNumber" name="lcdNumber_Strom">
                 <property name="maximumSize">
                  <size>
@@ -446,6 +478,35 @@
                 </property>
                 <property name="segmentStyle">
                  <enum>QLCDNumber::Flat</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2" colspan="2">
+               <widget class="QLCDNumber" name="lcdNumber_Volume">
+                <property name="maximumSize">
+                 <size>
+                  <width>75</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Plain</enum>
+                </property>
+                <property name="segmentStyle">
+                 <enum>QLCDNumber::Flat</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_9">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>50</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>MUX</string>
                 </property>
                </widget>
               </item>
@@ -462,8 +523,8 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
-               <widget class="QLCDNumber" name="lcdNumber_Temperatur">
+              <item row="4" column="2">
+               <widget class="QLCDNumber" name="lcdNumber_MUX">
                 <property name="maximumSize">
                  <size>
                   <width>75</width>
@@ -478,7 +539,7 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="0">
+              <item row="6" column="0">
                <widget class="QLabel" name="label_10">
                 <property name="minimumSize">
                  <size>
@@ -497,17 +558,14 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
-               <widget class="QwtTextLabel" name="TextLabel"/>
-              </item>
-              <item row="3" column="0">
+              <item row="7" column="0">
                <widget class="QRadioButton" name="radioButton_MUX1">
                 <property name="text">
                  <string>MUX 1</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="1">
+              <item row="7" column="2">
                <widget class="QRadioButton" name="radioButton_MUX2">
                 <property name="text">
                  <string>MUX 2</string>
@@ -520,7 +578,7 @@
            <item row="5" column="5" colspan="4">
             <widget class="QSlider" name="horizontalSlider_Volume">
              <property name="maximum">
-              <number>100</number>
+              <number>50</number>
              </property>
              <property name="singleStep">
               <number>1</number>

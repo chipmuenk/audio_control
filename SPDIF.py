@@ -179,7 +179,10 @@ class I2C:
         uiplot.comboBox_Abfragerate.addItem(str(2.0))
         uiplot.comboBox_Abfragerate.setCurrentIndex(3)
         uiplot.radioButton_Kanal1.setChecked(1)
-        uiplot.horizontalSlider_Volume.logicalDpiX()
+        uiplot.radioButton_MUX1.setChecked(1)
+        
+        
+        #uiplot.horizontalSlider_Volume.logicalDpiX()
         ValidComPorts = self.serialScan()
         if (len(ValidComPorts)) == 0:
             uiplot.comboBox_COM.addItem("KEIN COM!")
@@ -261,6 +264,8 @@ class I2C:
         self.tI2C = threading.Thread(target=self.requireData)
         self.cond = threading.Condition()
         uiplot.comboBox_COM.currentIndexChanged.connect(self.serialPort)
+        self.sendMUX1()
+        self.sendVolume()
         self.tI2C.start()
         QtGui.QDialog.connect(uiplot.radioButton_MUX1, QtCore.SIGNAL("clicked()"), self.sendMUX1)
         QtGui.QDialog.connect(uiplot.radioButton_MUX2, QtCore.SIGNAL("clicked()"), self.sendMUX2)
@@ -311,22 +316,25 @@ class I2C:
         schreibt die Auswahl der Volume auf I2C
         """
         if self.OpenPort:
-            ivalue = uiplot.horizontalSlider_Volume.value()*5
-            str_value_hex = str(hex(ivalue))
-            if ivalue > 250:
-                print("Ungueltiger Wert")
-            elif ivalue >= 20:                 
-                data = str_value_hex[2] + str_value_hex[3]
-            else:
-                data = '0' + str_value_hex[2]
+            try:
+                ivalue = uiplot.horizontalSlider_Volume.value()*5
+                str_value_hex = str(hex(ivalue))
+                if ivalue > 250:
+                    print("Ungueltiger Wert")
+                elif ivalue >= 20:                 
+                    data = str_value_hex[2] + str_value_hex[3]
+                else:
+                    data = '0' + str_value_hex[2]
                             
-            print("Daten:", data)
-            if self.Kanal == 1:
-                self.ser.write(I2C_Daten.VOLUME_1 + data + 'p')                    #TODO auslagern
-            elif self.Kanal == 2:
-                self.ser.write(I2C_Daten.VOLUME_2 + data + 'p')
-            else:
-                print("Kanal fehlerhaft")
+                            #print("Daten:", data)
+                if self.Kanal == 1:
+                    self.ser.write(I2C_Daten.VOLUME_1 + data + 'p')                    #TODO auslagern
+                elif self.Kanal == 2:
+                    self.ser.write(I2C_Daten.VOLUME_2 + data + 'p')
+                else:
+                    print("Kanal fehlerhaft")
+            except:
+                print("Error")
         else:
             print("COM nicht offen")
             
@@ -370,6 +378,14 @@ class I2C:
         strTemp = str(data[6])
         iTemp = int(strTemp, 16)
         uiplot.lcdNumber_Temperatur.display(iTemp)
+        
+        strVol = str(data[7])
+        iVol = int(strVol, 16)
+        uiplot.lcdNumber_Volume.display(iVol)
+        
+        strMUX = str(data[8])
+        iMUX = int(strMUX, 16)
+        uiplot.lcdNumber_MUX.display(iMUX)
         
     
     def testGUI(self):
