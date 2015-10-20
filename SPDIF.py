@@ -35,10 +35,18 @@ class SPDIF:
         self.newAudio=False
         self.bThreadStarted=False
         
+        self.channels=0
+        
+        uiplot.comboBox_channels.addItem(str(1))
+        uiplot.comboBox_channels.addItem(str(2))
+        uiplot.comboBox_channels.setCurrentIndex(1)
+        
+        
     def setup(self):    #SPDIF        
         """
         initialisiere Soundkarte, Quelle: http://www.swharden.com/blog/ (Link vom 27.08.2015)
         """
+        self.channels=int(uiplot.comboBox_channels.currentText())
         self.buffersToRecord=int(self.RATE*self.secToRecord/self.BUFFERSIZE)
         if self.buffersToRecord==0: self.buffersToRecord=1
         self.samplesToRecord=int(self.BUFFERSIZE*self.buffersToRecord)
@@ -46,10 +54,11 @@ class SPDIF:
         self.secPerPoint=1.0/self.RATE
 
         self.p = pyaudio.PyAudio()
-        self.inStream = self.p.open(format=pyaudio.paInt16,channels=1,rate=self.RATE,input=True,input_device_index=uiplot.comboBox_Audio_In.currentIndex(),frames_per_buffer=self.BUFFERSIZE)
+        
+        self.inStream = self.p.open(format=pyaudio.paInt16,channels=self.channels,rate=self.RATE,input=True,input_device_index=uiplot.comboBox_Audio_In.currentIndex(),frames_per_buffer=self.BUFFERSIZE)
         self.xsBuffer=numpy.arange(self.BUFFERSIZE)*self.secPerPoint
         self.xs=numpy.arange(self.chunksToRecord*self.BUFFERSIZE)*self.secPerPoint
-        self.audio=numpy.empty((self.chunksToRecord*self.BUFFERSIZE),dtype=numpy.int16)        
+        self.audio=numpy.empty((self.chunksToRecord*self.BUFFERSIZE*self.channels),dtype=numpy.int16)        
         
     def close(self):                                        #SPDIF
         """cleanly back out and release sound card."""
@@ -69,12 +78,21 @@ class SPDIF:
         """
         Thread: zeichnet Zeitintervall des Audiosignals auf.
         """
+        #self.audio_gesamt=numpy.zeros(self.BUFFERSIZE*2, dtype=)
         while True:
             self.lock.acquire()
             if self.threadDieNow: break
-            for i in range(self.chunksToRecord):
-                self.audio[i*self.BUFFERSIZE:(i+1)*self.BUFFERSIZE]=self.readSignal()
+            #print("Chunks to record")
+            #print(self.chunksToRecord)    
+            try:
+                for i in range(self.chunksToRecord):                
+                    #self.audio_gesamt[0:2048]=self.readSignal()                
+                    self.audio[i*self.BUFFERSIZE:(i+1)*self.BUFFERSIZE*self.channels]=self.readSignal()           #Array splitten!!!
+            except:
+                print("Kananlanzahl falsch")
             self.newAudio=True 
+            self.audio_l=self.audio[0::2]
+            self.audio_r=self.audio[1::2]
             if forever==False: break
             self.lock.release()
 
@@ -86,7 +104,8 @@ class SPDIF:
         self.lock = threading.Lock()
                    
         QtGui.QDialog.connect(uiplot.pushButton_Start, QtCore.SIGNAL("clicked()"), self.countClick)    # Echtzeitdarstellung des Audiosignals wird gestartet           
-        QtGui.QDialog.connect(uiplot.pushButton_Stop, QtCore.SIGNAL("clicked()"), self.suspend)        # Echtzeitdarstellung des Audiosignals wird angehalten     
+        QtGui.QDialog.connect(uiplot.pushButton_Stop, QtCore.SIGNAL("clicked()"), self.suspend)        # Echtzeitdarstellung des Audiosignals wird angehalten 
+        uiplot.comboBox_channels.currentIndexChanged.connect(self.setup)
     
     def suspend(self):                                      #SPDIF
         '''
@@ -94,6 +113,7 @@ class SPDIF:
         '''        
         self.lock.acquire()
         uiplot.comboBox_Audio_In.setEnabled(True)
+        uiplot.comboBox_channels.setEnabled(True)
         uiplot.pushButton_Stop.setDisabled(True)
         uiplot.pushButton_Start.setEnabled(True)
     
@@ -107,6 +127,7 @@ class SPDIF:
             self.tR.start()
             self.bThreadStarted = True
             uiplot.comboBox_Audio_In.setDisabled(True)
+            uiplot.comboBox_channels.setDisabled(True)
             uiplot.pushButton_Start.setDisabled(True)
             uiplot.pushButton_Stop.setEnabled(True)
             print(uiplot.comboBox_Audio_In.currentIndex())
@@ -114,6 +135,7 @@ class SPDIF:
             self.setup()
             self.lock.release()
             uiplot.comboBox_Audio_In.setDisabled(True)
+            uiplot.comboBox_channels.setDisabled(True)
             uiplot.pushButton_Start.setDisabled(True)
             uiplot.pushButton_Stop.setEnabled(True)
             print(uiplot.comboBox_Audio_In.currentIndex())
@@ -157,7 +179,7 @@ class SPDIF:
         """
         if s.newAudio==False: 
             return
-        c.setData(s.xs,s.audio)
+        c.setData(s.xs,s.audio_l)
         uiplot.qwtPlot_Zeitsignal.replot()
         s.newAudio=False
         
@@ -263,6 +285,7 @@ class I2C:
         self.tI2C = threading.Thread(target=self.requireData)
         self.cond = threading.Condition()
         uiplot.comboBox_COM.currentIndexChanged.connect(self.serialPort)
+        
         self.sendMUX1()
         self.sendVolume()
         self.tI2C.start()
