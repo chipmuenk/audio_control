@@ -7,18 +7,17 @@ Created on Fri Aug 14 16:12:08 2015
 
 from __future__ import print_function, division, absolute_import
 
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui, QtCore, uic
 #from PyQt4.QtGui import qApp
 #import os
 import PyQt4.Qwt5 as Qwt
 
-import GUI_AudioControl, I2C_Daten
+import I2C_Daten
 
 #==============================================================================
 # PYTHON IMPORTS
 #==============================================================================
 import sys, pyaudio, numpy, threading, serial
-import numpy as np
 
 
 #==============================================================================
@@ -405,16 +404,24 @@ class I2C:
             self.ser.close()
         self.threadDieNow = True
         self.tI2C._Thread__stop()
-        
+
+class MyMainWindow(QtGui.QMainWindow):
+    
+    def __init__(self, parent=None):
+        QtGui.QMainWindow.__init__(self, parent)        
+        self.ui=uic.loadUi('GUI_AudioControl.ui',self)
+
+      
 #==============================================================================
 # MAIN
 #==============================================================================
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
     
-    win_plot = GUI_AudioControl.QtGui.QMainWindow()
-    uiplot = GUI_AudioControl.Ui_MainWindow()
-    uiplot.setupUi(win_plot)
+    uiplot=MyMainWindow()
+    #win_plot = GUI_AudioControl.QtGui.QMainWindow()
+    #uiplot = GUI_AudioControl.Ui_MainWindow()
+    #uiplot.setupUi(win_plot)
     s = SPDIF()         # Instanz von SPDIF wird erzeugt
     bus = I2C()         # Instanz von I2C wird erzeugt
     
@@ -429,14 +436,14 @@ if __name__ == '__main__':
     uiplot.timer = QtCore.QTimer()
     uiplot.timer.start(1.0)
     
-    win_plot.connect(uiplot.timer, QtCore.SIGNAL('timeout()'), s.plotSignal)
+    uiplot.connect(uiplot.timer, QtCore.SIGNAL('timeout()'), s.plotSignal)
         
     s.setupAudio()
     s.setup()
     s.continuousStart()         # startet SPDIF
     bus.continuousStart()       # startet I2C
     
-    win_plot.show()
+    uiplot.show()
     
     code = app.exec_()          # Beenden des Programms
     s.close()
