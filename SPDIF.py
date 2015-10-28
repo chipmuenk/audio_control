@@ -78,15 +78,12 @@ class SPDIF:
         """
         Thread: zeichnet Zeitintervall des Audiosignals auf.
         """
-        #self.audio_gesamt=numpy.zeros(self.BUFFERSIZE*2, dtype=)
         while True:
             self.lock.acquire()
             if self.threadDieNow: break
-            #print("Chunks to record")
-            #print(self.chunksToRecord)    
+
             try:
                 for i in range(self.chunksToRecord):                
-                    #self.audio_gesamt[0:2048]=self.readSignal()                
                     self.audio[i*self.BUFFERSIZE:(i+1)*self.BUFFERSIZE*self.channels]=self.readSignal()           #Array splitten!!!
             except:
                 print("Kananlanzahl falsch")
@@ -194,11 +191,13 @@ class I2C:
         self.OpenPort = False
         self.threadDieNow=False
         self.Kanal = 1
+        self.Uebertragung = 1
         uiplot.comboBox_Abfragerate.addItem(str(0.01))
         uiplot.comboBox_Abfragerate.addItem(str(0.1))
         uiplot.comboBox_Abfragerate.addItem(str(1.0))
         uiplot.comboBox_Abfragerate.addItem(str(2.0))
         uiplot.comboBox_Abfragerate.setCurrentIndex(3)
+        uiplot.radioButton_I2C.setChecked(1)        
         uiplot.radioButton_Kanal1.setChecked(1)
         uiplot.radioButton_MUX1.setChecked(1)
         
@@ -289,6 +288,8 @@ class I2C:
         self.sendMUX1()
         self.sendVolume()
         self.tI2C.start()
+        QtGui.QDialog.connect(uiplot.radioButton_I2C, QtCore.SIGNAL("clicked()"), lambda: self.auswahl_uebertragung(1))
+        QtGui.QDialog.connect(uiplot.radioButton_seriell, QtCore.SIGNAL("clicked()"), lambda: self.auswahl_uebertragung(2))
         QtGui.QDialog.connect(uiplot.radioButton_MUX1, QtCore.SIGNAL("clicked()"), self.sendMUX1)
         QtGui.QDialog.connect(uiplot.radioButton_MUX2, QtCore.SIGNAL("clicked()"), self.sendMUX2)
         QtGui.QDialog.connect(uiplot.radioButton_Kanal1, QtCore.SIGNAL("clicked()"), lambda: self.auswahl_kanal(1))
@@ -332,7 +333,14 @@ class I2C:
         else:
             print("Kanal fehlerhaft")
         
-            
+    def auswahl_uebertragung(self, uebertragung):
+        if uebertragung == 1:
+            self.Uebertragung = 1
+        elif uebertragung == 2:
+            self.Uebertragung = 2
+        else:
+            print("Uebertragung fehlerhaft")
+        
     def sendVolume(self):                               #I2C
         """
         schreibt die Auswahl der Volume auf I2C
