@@ -99,6 +99,7 @@ class SPDIF:
         """
         self.tR = threading.Thread(target=self.record)
         self.lock = threading.Lock()
+        self.tR.daemon = True
                    
         QtGui.QDialog.connect(uiplot.pushButton_Start, QtCore.SIGNAL("clicked()"), self.countClick)    # Echtzeitdarstellung des Audiosignals wird gestartet           
         QtGui.QDialog.connect(uiplot.pushButton_Stop, QtCore.SIGNAL("clicked()"), self.suspend)        # Echtzeitdarstellung des Audiosignals wird angehalten 
@@ -267,11 +268,11 @@ class I2C:
             if self.threadDieNow: break
             if self.OpenPort:
                 
-                print("Anforderung Daten")#
-                print(uiplot.horizontalSlider_Volume.value())#
+                #print("Anforderung Daten")
+                #print(uiplot.horizontalSlider_Volume.value())
                 self.readI2C()
             else:
-                print("COM Port nicht geoeffnet")
+                #print("COM Port nicht geoeffnet")
                 self.testGUI()
             self.cond.release()
  
@@ -287,6 +288,7 @@ class I2C:
         
         self.sendMUX1()
         self.sendVolume()
+        self.tI2C.daemon = True
         self.tI2C.start()
         QtGui.QDialog.connect(uiplot.radioButton_I2C, QtCore.SIGNAL("clicked()"), lambda: self.auswahl_uebertragung(1))
         QtGui.QDialog.connect(uiplot.radioButton_seriell, QtCore.SIGNAL("clicked()"), lambda: self.auswahl_uebertragung(2))
@@ -372,7 +374,7 @@ class I2C:
         """
         liest die empfangenen Daten von I2C
         """
-        print("Lese I2C:", self.Kanal)
+        #print("Lese I2C:", self.Kanal)
         i = 0;
         myList=[0 for j in range(9)]
         #self.wert=[]
@@ -441,6 +443,15 @@ class MyMainWindow(QtGui.QMainWindow):
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)        
         self.ui=uic.loadUi('GUI_AudioControl.ui',self)
+        self.qwtPlot_Zeitsignal.setAxisScale(self.qwtPlot_Zeitsignal.yLeft,-10000,10000)
+        self.Thermo_Ausgang.setRange(-100.0,100.0)
+        self.Thermo_Vcc.setRange(-100.0,100.0)
+        
+        self.pushButton_Stop.setDisabled(True)
+        self.timer = QtCore.QTimer()
+        self.timer.start(1.0)
+        
+        
 
       
 #==============================================================================
@@ -448,6 +459,7 @@ class MyMainWindow(QtGui.QMainWindow):
 #==============================================================================
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
+    
     
     uiplot=MyMainWindow()
     #win_plot = GUI_AudioControl.QtGui.QMainWindow()
@@ -459,21 +471,13 @@ if __name__ == '__main__':
     c = Qwt.QwtPlotCurve()
     c.attach(uiplot.qwtPlot_Zeitsignal)
     
-    uiplot.qwtPlot_Zeitsignal.setAxisScale(uiplot.qwtPlot_Zeitsignal.yLeft,-10000,10000)
-    uiplot.Thermo_Ausgang.setRange(-100.0,100.0)
-    uiplot.Thermo_Vcc.setRange(-100.0,100.0)
-    
-    uiplot.pushButton_Stop.setDisabled(True)
-    uiplot.timer = QtCore.QTimer()
-    uiplot.timer.start(1.0)
-    
-    uiplot.connect(uiplot.timer, QtCore.SIGNAL('timeout()'), s.plotSignal)
+
         
     s.setupAudio()
     s.setup()
     s.continuousStart()         # startet SPDIF
     bus.continuousStart()       # startet I2C
-    
+    uiplot.connect(uiplot.timer, QtCore.SIGNAL('timeout()'), s.plotSignal)
     uiplot.show()
     
     code = app.exec_()          # Beenden des Programms
