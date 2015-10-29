@@ -41,6 +41,12 @@ class SPDIF:
         uiplot.comboBox_channels.addItem(str(2))
         uiplot.comboBox_channels.setCurrentIndex(1)
         
+        self.setupAudio()
+        self.setup()
+        self.continuousStart()
+        uiplot.connect(uiplot.timer, QtCore.SIGNAL('timeout()'), self.plotSignal)
+        uiplot.show()
+        
         
     def setup(self):    #SPDIF        
         """
@@ -221,6 +227,8 @@ class I2C:
             self.ser.write('Y01')
         else:
             print("Kein COM")
+            
+        self.continuousStart()
     
     def serialScan(self):                               #I2C
         """
@@ -450,8 +458,6 @@ class MyMainWindow(QtGui.QMainWindow):
         self.pushButton_Stop.setDisabled(True)
         self.timer = QtCore.QTimer()
         self.timer.start(1.0)
-        
-        
 
       
 #==============================================================================
@@ -462,9 +468,7 @@ if __name__ == '__main__':
     
     
     uiplot=MyMainWindow()
-    #win_plot = GUI_AudioControl.QtGui.QMainWindow()
-    #uiplot = GUI_AudioControl.Ui_MainWindow()
-    #uiplot.setupUi(win_plot)
+
     s = SPDIF()         # Instanz von SPDIF wird erzeugt
     bus = I2C()         # Instanz von I2C wird erzeugt
     
@@ -473,12 +477,12 @@ if __name__ == '__main__':
     
 
         
-    s.setupAudio()
-    s.setup()
-    s.continuousStart()         # startet SPDIF
-    bus.continuousStart()       # startet I2C
-    uiplot.connect(uiplot.timer, QtCore.SIGNAL('timeout()'), s.plotSignal)
-    uiplot.show()
+    #s.setupAudio()
+    #s.setup()
+    #s.continuousStart()         # startet SPDIF
+    #bus.continuousStart()       # startet I2C
+    #uiplot.connect(uiplot.timer, QtCore.SIGNAL('timeout()'), s.plotSignal)
+    #uiplot.show()
     
     code = app.exec_()          # Beenden des Programms
     s.close()
