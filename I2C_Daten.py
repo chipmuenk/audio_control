@@ -1,5 +1,3 @@
-
-	
 CYCLIC_1 = 'sbedapsbf09p'
 CYCLIC_2 = 'saedapsaf09p'
 VOLUME_1 = 'sbe2a'
@@ -8,3 +6,12 @@ MUX1_1 = 'sbe1501p'
 MUX2_1 = 'sbe1502p'
 MUX1_2 = 'sae1501p'
 MUX2_2 = 'sae1502p'
+
+CYCLIC_1_uart = 'sbedapsbf09p'
+CYCLIC_2_uart = 'saedapsaf09p'
+VOLUME_1_uart = 'sbe2a'
+VOLUME_2_uart = 'sae2a'
+MUX1_1_uart = 'sbe1501p'
+MUX2_1_uart = 'sbe1502p'
+MUX1_2_uart = 'sae1501p'
+MUX2_2_uart = 'sae1502p'

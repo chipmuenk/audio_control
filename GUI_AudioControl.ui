@@ -642,9 +642,6 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="2" colspan="3">
-            <widget class="QComboBox" name="comboBox_COM"/>
-           </item>
            <item row="1" column="3">
             <widget class="QRadioButton" name="radioButton_Kanal2">
              <property name="text">
@@ -673,6 +670,23 @@
                </widget>
               </item>
              </layout>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QComboBox" name="comboBox_COM">
+             <property name="minimumSize">
+              <size>
+               <width>90</width>
+               <height>0</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QPushButton" name="pushButton_Open">
+             <property name="text">
+              <string>Open</string>
+             </property>
             </widget>
            </item>
           </layout>

@@ -194,7 +194,8 @@ class I2C:
         Initialisierung I2C für ELV USB/I2C Interface
         Scan nach erreichbaren COM Schnittstellen
         """
-        self.BAUDRATE = 115200                          # Einstellungen des ELV USB/I2C Interface gemaess Bedienungsanleitung
+        self.BAUDRATE_I2C = 115200                          # Einstellungen des ELV USB/I2C Interface gemaess Bedienungsanleitung
+        self.BAUDRATE_UART = 9600        
         self.OpenPort = False
         self.threadDieNow=False
         self.Kanal = 1
@@ -230,7 +231,7 @@ class I2C:
             
         self.continuousStart()
     
-    def serialScan(self):                               #I2C
+    def serialScan(self):                               
         """
         gibt alle erreichbaren COM Schnittstellen zurueck, hauptsaechlich aus "Verstaerker_v3_3_3.py" uebernommen
         """
@@ -246,25 +247,46 @@ class I2C:
             print("Es wurde kein freier COM-Port gefunden.")
         return ports
         
-    def serialPort(self):                               #I2C
+    def serialPort(self):                               
         """
         serialPort oeffnet den ausgewaehlten COM-Port, hauptsaechlich aus "Verstaerker_v3_3_3.py" uebernommen
         """
+        
         com = uiplot.comboBox_COM.currentText()
-        self.ser = serial.Serial(
-                                 port=str(com),
-                                 baudrate=self.BAUDRATE,
-                                 parity=serial.PARITY_EVEN,
-                                 stopbits=serial.STOPBITS_ONE,
-                                 bytesize=serial.EIGHTBITS
-                                 )
-        self.OpenPort = True
-        if(self.ser.isOpen() == False):
-            try:
-                self.ser.open()
+        try:
+            if self.Uebertragung == 1:                                  #I2C
+                self.ser = serial.Serial(
+                                         port=str(com),
+                                         baudrate=self.BAUDRATE_I2C,
+                                         parity=serial.PARITY_EVEN,
+                                         stopbits=serial.STOPBITS_ONE,
+                                         bytesize=serial.EIGHTBITS
+                                         )
                 self.OpenPort = True
-            except serial.SerialException:
-                self.OpenPort = False
+                if(self.ser.isOpen() == False):
+                    try:
+                        self.ser.open()
+                        self.OpenPort = True
+                    except serial.SerialException:
+                        self.OpenPort = False
+            elif self.Uebertragung == 2:                                #UART
+                self.ser = serial.Serial(
+                                         port=str(com),
+                                         baudrate=self.BAUDRATE_UART,
+                                         parity=serial.PARITY_NONE,
+                                         stopbits=serial.STOPBITS_ONE,
+                                         bytesize=serial.EIGHTBITS
+                                         )
+                self.OpenPort = True
+                if(self.ser.isOpen() == False):
+                    try:
+                        self.ser.open()
+                        self.OpenPort = True
+                    except serial.SerialException:
+                        self.OpenPort = False                
+             
+        except serial.SerialException:
+            print("COM kann nicht geoeffnet werden")
         
     def requireData(self):                              #I2C
         """
@@ -292,12 +314,14 @@ class I2C:
         """
         self.tI2C = threading.Thread(target=self.requireData)
         self.cond = threading.Condition()
-        uiplot.comboBox_COM.currentIndexChanged.connect(self.serialPort)
+        #uiplot.comboBox_COM.currentIndexChanged.connect(self.serialPort)
+        QtGui.QDialog.connect(uiplot.pushButton_Open, QtCore.SIGNAL("clicked()"), self.serialPort)
         
         self.sendMUX1()
         self.sendVolume()
         self.tI2C.daemon = True
         self.tI2C.start()
+        
         QtGui.QDialog.connect(uiplot.radioButton_I2C, QtCore.SIGNAL("clicked()"), lambda: self.auswahl_uebertragung(1))
         QtGui.QDialog.connect(uiplot.radioButton_seriell, QtCore.SIGNAL("clicked()"), lambda: self.auswahl_uebertragung(2))
         QtGui.QDialog.connect(uiplot.radioButton_MUX1, QtCore.SIGNAL("clicked()"), self.sendMUX1)
@@ -344,6 +368,9 @@ class I2C:
             print("Kanal fehlerhaft")
         
     def auswahl_uebertragung(self, uebertragung):
+        if self.OpenPort:
+            self.ser.close()
+            
         if uebertragung == 1:
             self.Uebertragung = 1
         elif uebertragung == 2:
