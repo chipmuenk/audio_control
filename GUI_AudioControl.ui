@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>703</width>
+    <width>709</width>
     <height>920</height>
    </rect>
   </property>
@@ -37,7 +37,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>683</width>
+         <width>689</width>
          <height>900</height>
         </rect>
        </property>
@@ -192,7 +192,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="groupBox_8">
+            <widget class="QGroupBox" name="groupBox_XY">
              <property name="minimumSize">
               <size>
                <width>0</width>
@@ -221,17 +221,59 @@
                </widget>
               </item>
               <item>
-               <spacer name="horizontalSpacer_2">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+               <widget class="QLabel" name="label_15">
+                <property name="text">
+                 <string>Y-min</string>
                 </property>
-                <property name="sizeHint" stdset="0">
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="spinBox_Ymin">
+                <property name="minimumSize">
                  <size>
-                  <width>40</width>
+                  <width>0</width>
                   <height>20</height>
                  </size>
                 </property>
-               </spacer>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_16">
+                <property name="text">
+                 <string>Y-max</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="spinBox_Ymax">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="radioButton_Einkanal">
+                <property name="text">
+                 <string>Ein-Kanal</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="radioButton_Diff">
+                <property name="text">
+                 <string>Differenz</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="radioButton_3">
+                <property name="text">
+                 <string>X-Y</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>

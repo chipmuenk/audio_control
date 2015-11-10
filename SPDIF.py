@@ -36,10 +36,15 @@ class SPDIF:
         self.bThreadStarted=False
         
         self.channels=0
+        self.anzeige=1
         
         uiplot.comboBox_channels.addItem(str(1))
         uiplot.comboBox_channels.addItem(str(2))
         uiplot.comboBox_channels.setCurrentIndex(1)
+        uiplot.spinBox_Ymin.setRange(-10000,10000)
+        uiplot.spinBox_Ymax.setRange(-10000,10000)
+        uiplot.spinBox_Ymin.setValue(-10000)
+        uiplot.spinBox_Ymax.setValue(10000)
         
         self.setupAudio()
         self.setup()
@@ -174,7 +179,10 @@ class SPDIF:
         uiplot.comboBox_Audio_In.setCurrentIndex(defaultInBoxIdx)
         #self.comboBoxAudioOut.setCurrentIndex(defaultOutBoxIdx)
 #        print("Default Output Device : %s" % self.p.get_default_output_device_info()['name'])
-#        self.comboBoxAudioOut.addItems(deviceList)        
+#        self.comboBoxAudioOut.addItems(deviceList)      
+        
+    def auswahlAnzeige(self):
+        pass
         
         
     def plotSignal(self):        
@@ -183,7 +191,16 @@ class SPDIF:
         """
         if s.newAudio==False: 
             return
-        c.setData(s.xs,s.audio_l)
+        uiplot.qwtPlot_Zeitsignal.setAxisScale(uiplot.qwtPlot_Zeitsignal.yLeft,uiplot.spinBox_Ymin.value(),uiplot.spinBox_Ymax.value())
+        
+        if self.anzeige==1:
+            c.setData(s.xs,s.audio_l)
+        elif self.anzeige==2:
+            c.setData(s.xs,s.audio_l)
+        elif self.anzeige==3:
+            c.setData(s.xs,s.audio_l)
+        
+        #c.setData(s.xs,s.audio_l)
         uiplot.qwtPlot_Zeitsignal.replot()
         s.newAudio=False
         
