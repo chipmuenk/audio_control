@@ -69,8 +69,10 @@ class SPDIF:
         try:
             self.inStream = self.p.open(format=pyaudio.paInt16,channels=self.channels,rate=self.RATE,input=True,input_device_index=uiplot.comboBox_Audio_In.currentIndex(),frames_per_buffer=self.BUFFERSIZE)
             self.stream_open = True
+            uiplot.statusBar().clear()
         except:
             print("Kein Audiodevice vorhanden")
+            uiplot.statusMessage("Kein Audiodevice vorhanden.")
             self.stream_open = False
         self.xsBuffer = numpy.arange(self.BUFFERSIZE)*self.secPerPoint
         
@@ -103,8 +105,10 @@ class SPDIF:
             try:
                 for i in range(self.chunksToRecord):                
                     self.audio[i*self.BUFFERSIZE:(i+1)*self.BUFFERSIZE*self.channels] = self.readSignal()
+                uiplot.statusBar().clear()
             except:
                 print("Kananlanzahl falsch")
+                uiplot.statusMessage("Kananlanzahl falsch.")
             
             self.newAudio = True 
             self.audio_l = self.audio[0::2]               #Aufteilung in linker und rechter Kanal
@@ -155,8 +159,10 @@ class SPDIF:
             self.setup()
             if self.stream_open:            
                 self.tR.start()
+                uiplot.statusBar().clear()
             else:
                 print("Audio Thread konnte nicht gestartet werden")
+                uiplot.statusMessage("Audio Thread konnte nicht gestartet werden.")
             
             uiplot.comboBox_Audio_In.setDisabled(True)
             uiplot.comboBox_channels.setDisabled(True)
@@ -262,9 +268,9 @@ class I2C:
             for i in range(len(ValidComPorts)):
                 uiplot.comboBox_COM.addItem(ValidComPorts[i][1])
         com = uiplot.comboBox_COM.currentText()
-        if ("KEIN COM!" == com):
-            print("Kein COM")
-        else:
+        if ("KEIN COM!" != com):
+            #print("Kein COM")
+        #else:
             self.serialPort()
             
         if self.OpenPort:
@@ -286,7 +292,10 @@ class I2C:
             except serial.SerialException:
                 pass
         if(len(ports) == 0):
-            print("Es wurde kein freier COM-Port gefunden.")
+            print("Es wurde kein COM-Port gefunden.")
+            uiplot.statusMessage("Es wurde kein COM-Port gefunden.")
+        else:
+            uiplot.statusBar().clear()
         return ports
         
     def serialPort(self):                               
@@ -324,9 +333,11 @@ class I2C:
                         self.ser.open()
                         self.OpenPort = True
                     except serial.SerialException:
-                        self.OpenPort = False                             
+                        self.OpenPort = False
+            uiplot.statusBar().clear()                             
         except serial.SerialException:
             print("COM kann nicht geoeffnet werden")
+            uiplot.statusMessage("COM kann nicht geoeffnet werden.")
         
     def requireData(self):                              #I2C
         """
@@ -380,8 +391,8 @@ class I2C:
                 self.ser.write(I2C_Daten.MUX1_2)
             else:
                 print("Kanal fehlerhaft")
-        else:
-            print("COM nicht offen")
+#        else:
+#            print("COM nicht offen")
             #print(self.Kanal)
  
     def sendMUX2(self):                                 #I2C
@@ -395,8 +406,8 @@ class I2C:
                 self.ser.write(I2C_Daten.MUX2_2)
             else:
                 print("Kanal fehlerhaft") 
-        else:
-            print("COM nicht offen")
+#        else:
+#            print("COM nicht offen")
             
     def auswahl_kanal(self, kanal):
         """
@@ -443,8 +454,10 @@ class I2C:
                     self.ser.write(I2C_Daten.VOLUME_2 + data + 'p')
                 else:
                     print("Kanal fehlerhaft")
+                uiplot.statusBar().clear()
             except:
                 print("Schreiben auf COM fehlgeschlagen")
+                uiplot.statusMessage("Schreiben auf COM fehlgeschlagen.")
 #        else:
 #            print("COM nicht offen")
             
@@ -526,6 +539,12 @@ class MyMainWindow(QtGui.QMainWindow):
         self.pushButton_Stop.setDisabled(True)
         self.timer = QtCore.QTimer()
         self.timer.start(1.0)
+        
+    def statusMessage(self, message):    
+        """
+        Display a message in the statusbar.
+        """        
+        self.statusBar().showMessage(message)
       
 #==============================================================================
 # MAIN
