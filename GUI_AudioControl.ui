@@ -269,7 +269,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QRadioButton" name="radioButton_3">
+               <widget class="QRadioButton" name="radioButton_XY">
                 <property name="text">
                  <string>X-Y</string>
                 </property>

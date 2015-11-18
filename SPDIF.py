@@ -45,6 +45,7 @@ class SPDIF:
         uiplot.spinBox_Ymax.setRange(-10000,10000)
         uiplot.spinBox_Ymin.setValue(-10000)
         uiplot.spinBox_Ymax.setValue(10000)
+        uiplot.radioButton_Einkanal.setChecked(1)
         
         self.setupAudio()
         self.setup()
@@ -101,6 +102,7 @@ class SPDIF:
             self.newAudio=True 
             self.audio_l=self.audio[0::2]
             self.audio_r=self.audio[1::2]
+            self.audio_diff=self.audio_l-self.audio_r
             if forever==False: break
             self.lock.release()
 
@@ -115,6 +117,9 @@ class SPDIF:
         QtGui.QDialog.connect(uiplot.pushButton_Start, QtCore.SIGNAL("clicked()"), self.countClick)    # Echtzeitdarstellung des Audiosignals wird gestartet           
         QtGui.QDialog.connect(uiplot.pushButton_Stop, QtCore.SIGNAL("clicked()"), self.suspend)        # Echtzeitdarstellung des Audiosignals wird angehalten 
         uiplot.comboBox_channels.currentIndexChanged.connect(self.setup)
+        QtGui.QDialog.connect(uiplot.radioButton_Einkanal, QtCore.SIGNAL("clicked()"), lambda: self.auswahlAnzeige(1))
+        QtGui.QDialog.connect(uiplot.radioButton_Diff, QtCore.SIGNAL("clicked()"), lambda: self.auswahlAnzeige(2))
+        QtGui.QDialog.connect(uiplot.radioButton_XY, QtCore.SIGNAL("clicked()"), lambda: self.auswahlAnzeige(3))
     
     def suspend(self):                                      #SPDIF
         '''
@@ -125,6 +130,10 @@ class SPDIF:
         uiplot.comboBox_channels.setEnabled(True)
         uiplot.pushButton_Stop.setDisabled(True)
         uiplot.pushButton_Start.setEnabled(True)
+        
+        print(self.audio_l)
+        print(self.audio_r)
+        print(self.audio_diff)
     
     def countClick(self):                                   #SPDIF
         """
@@ -181,8 +190,15 @@ class SPDIF:
 #        print("Default Output Device : %s" % self.p.get_default_output_device_info()['name'])
 #        self.comboBoxAudioOut.addItems(deviceList)      
         
-    def auswahlAnzeige(self):
-        pass
+    def auswahlAnzeige(self, anz):
+        if anz == 1:
+            self.anzeige = 1
+        elif anz == 2:
+            self.anzeige = 2
+        elif anz == 3:
+            self.anzeige = 3
+        else:
+            print("Anzeige fehlerhaft")        
         
         
     def plotSignal(self):        
@@ -191,14 +207,17 @@ class SPDIF:
         """
         if s.newAudio==False: 
             return
-        uiplot.qwtPlot_Zeitsignal.setAxisScale(uiplot.qwtPlot_Zeitsignal.yLeft,uiplot.spinBox_Ymin.value(),uiplot.spinBox_Ymax.value())
+        
         
         if self.anzeige==1:
-            c.setData(s.xs,s.audio_l)
+            uiplot.qwtPlot_Zeitsignal.setAxisScale(uiplot.qwtPlot_Zeitsignal.xBottom,0,0.025)
+            c.setData(self.xs,self.audio_l)            
         elif self.anzeige==2:
-            c.setData(s.xs,s.audio_l)
+            uiplot.qwtPlot_Zeitsignal.setAxisScale(uiplot.qwtPlot_Zeitsignal.xBottom,0,0.025)
+            c.setData(self.xs,self.audio_diff)
         elif self.anzeige==3:
-            c.setData(s.xs,s.audio_l)
+            uiplot.qwtPlot_Zeitsignal.setAxisScale(uiplot.qwtPlot_Zeitsignal.xBottom,uiplot.spinBox_Ymin.value(),uiplot.spinBox_Ymax.value())
+            c.setData(self.audio_l,self.audio_r)
         
         #c.setData(s.xs,s.audio_l)
         uiplot.qwtPlot_Zeitsignal.replot()
