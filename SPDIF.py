@@ -303,41 +303,45 @@ class I2C:
         serialPort oeffnet den ausgewaehlten COM-Port, hauptsaechlich aus "Verstaerker_v3_3_3.py" uebernommen
         """        
         com = uiplot.comboBox_COM.currentText()
-        try:
-            if 1 == self.Uebertragung:                                  #I2C
-                self.ser = serial.Serial(
-                                         port=str(com),
-                                         baudrate=self.BAUDRATE_I2C,
-                                         parity=serial.PARITY_EVEN,
-                                         stopbits=serial.STOPBITS_ONE,
-                                         bytesize=serial.EIGHTBITS
-                                         )
-                self.OpenPort = True
-                if False == self.ser.isOpen():
-                    try:
-                        self.ser.open()
-                        self.OpenPort = True
-                    except serial.SerialException:
-                        self.OpenPort = False
-            elif 2 == self.Uebertragung:                                #UART
-                self.ser = serial.Serial(
-                                         port=str(com),
-                                         baudrate=self.BAUDRATE_UART,
-                                         parity=serial.PARITY_NONE,
-                                         stopbits=serial.STOPBITS_ONE,
-                                         bytesize=serial.EIGHTBITS
-                                         )
-                self.OpenPort = True
-                if False == self.ser.isOpen():
-                    try:
-                        self.ser.open()
-                        self.OpenPort = True
-                    except serial.SerialException:
-                        self.OpenPort = False
-            uiplot.statusBar().clear()                             
-        except serial.SerialException:
-            print("COM kann nicht geoeffnet werden")
-            uiplot.statusMessage("COM kann nicht geoeffnet werden.")
+        if False == self.OpenPort:    
+            try:
+                if 1 == self.Uebertragung:                                  #I2C
+                    self.ser = serial.Serial(
+                                             port=str(com),
+                                             baudrate=self.BAUDRATE_I2C,
+                                             parity=serial.PARITY_EVEN,
+                                             stopbits=serial.STOPBITS_ONE,
+                                             bytesize=serial.EIGHTBITS
+                                             )
+                    self.OpenPort = True
+                    if False == self.ser.isOpen():
+                        try:
+                            self.ser.open()
+                            self.OpenPort = True
+                        except serial.SerialException:
+                            self.OpenPort = False
+                elif 2 == self.Uebertragung:                                #UART
+                    self.ser = serial.Serial(
+                                             port=str(com),
+                                             baudrate=self.BAUDRATE_UART,
+                                             parity=serial.PARITY_NONE,
+                                             stopbits=serial.STOPBITS_ONE,
+                                             bytesize=serial.EIGHTBITS
+                                             )
+                    self.OpenPort = True
+                    if False == self.ser.isOpen():
+                        try:
+                            self.ser.open()
+                            self.OpenPort = True
+                        except serial.SerialException:
+                            self.OpenPort = False
+                uiplot.statusBar().clear()                             
+            except serial.SerialException:
+                print("COM kann nicht geoeffnet werden")
+                uiplot.statusMessage("COM kann nicht geoeffnet werden.")
+            
+        else:
+            uiplot.statusMessage("COM ist bereits offen")
         
     def requireData(self):                              #I2C
         """
@@ -372,8 +376,8 @@ class I2C:
         self.tI2C.start()
         
         QtGui.QDialog.connect(uiplot.pushButton_Open, QtCore.SIGNAL("clicked()"), self.serialPort)
-        QtGui.QDialog.connect(uiplot.radioButton_I2C, QtCore.SIGNAL("clicked()"), lambda: self.auswahl_uebertragung(1))
-        QtGui.QDialog.connect(uiplot.radioButton_seriell, QtCore.SIGNAL("clicked()"), lambda: self.auswahl_uebertragung(2))
+        #QtGui.QDialog.connect(uiplot.radioButton_I2C, QtCore.SIGNAL("clicked()"), lambda: self.auswahl_uebertragung(1))
+        #QtGui.QDialog.connect(uiplot.radioButton_seriell, QtCore.SIGNAL("clicked()"), lambda: self.auswahl_uebertragung(2))
         QtGui.QDialog.connect(uiplot.radioButton_MUX1, QtCore.SIGNAL("clicked()"), self.sendMUX1)
         QtGui.QDialog.connect(uiplot.radioButton_MUX2, QtCore.SIGNAL("clicked()"), self.sendMUX2)
         QtGui.QDialog.connect(uiplot.radioButton_Kanal1, QtCore.SIGNAL("clicked()"), lambda: self.auswahl_kanal(1))
@@ -472,8 +476,11 @@ class I2C:
         elif 2 == self.Kanal:
             self.ser.write(I2C_Daten.CYCLIC_2)
         while self.ser.inWaiting() > 0:
-            myList[i] = self.ser.read(2)           
-            i = i + 1                                 
+            try:            
+                myList[i] = self.ser.read(2)           
+                i = i + 1                                 
+            except:
+                print("Index out of range")
         
         self.writeGUI(myList)                                      
    
@@ -483,28 +490,46 @@ class I2C:
         '''
         strV_in = str(data[1] + data[2])
         #print(strV_in)
-        iV_in = int(strV_in, 16)
+        try:
+            iV_in = int(strV_in, 16)
+        except:
+            iV_in = "Err"
         #print(iV_in)
         uiplot.lcdNumber_Vcc.display(iV_in)
         
         strV_out = str(data[3] + data[4])
-        iV_out = int(strV_out, 16)
+        try:        
+            iV_out = int(strV_out, 16)
+        except:
+            iV_out = "Err"
         uiplot.lcdNumber_2_Ausgang.display(iV_out)
         
         strI = str(data[5])
-        iI = int(strI, 16)
+        try:        
+            iI = int(strI, 16)
+        except:
+            iI = "Err"
         uiplot.lcdNumber_Strom.display(iI)
         
         strTemp = str(data[6])
-        iTemp = int(strTemp, 16)
+        try:
+            iTemp = int(strTemp, 16)
+        except:
+            iTemp = "Err"
         uiplot.lcdNumber_Temperatur.display(iTemp)
         
         strVol = str(data[7])
-        iVol = int(strVol, 16)
+        try:
+            iVol = int(strVol, 16)
+        except:
+            iVol = "Err"
         uiplot.lcdNumber_Volume.display(iVol)
         
         strMUX = str(data[8])
-        iMUX = int(strMUX, 16)
+        try:
+            iMUX = int(strMUX, 16)
+        except:
+            iMUX = "Err"
         uiplot.lcdNumber_MUX.display(iMUX)
         
     

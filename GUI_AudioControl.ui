@@ -287,208 +287,6 @@
            <string>I2C/Seriell</string>
           </property>
           <layout class="QGridLayout" name="gridLayout">
-           <item row="5" column="0" colspan="4">
-            <widget class="QGroupBox" name="groupBox_7">
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>50</height>
-              </size>
-             </property>
-             <property name="title">
-              <string/>
-             </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_3">
-              <item>
-               <widget class="QLCDNumber" name="lcdNumber_Vcc">
-                <property name="maximumSize">
-                 <size>
-                  <width>50</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="autoFillBackground">
-                 <bool>false</bool>
-                </property>
-                <property name="frameShape">
-                 <enum>QFrame::Box</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Plain</enum>
-                </property>
-                <property name="lineWidth">
-                 <number>1</number>
-                </property>
-                <property name="midLineWidth">
-                 <number>0</number>
-                </property>
-                <property name="segmentStyle">
-                 <enum>QLCDNumber::Flat</enum>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_3">
-                <property name="text">
-                 <string>Volt</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLCDNumber" name="lcdNumber_2_Ausgang">
-                <property name="maximumSize">
-                 <size>
-                  <width>50</width>
-                  <height>20</height>
-                 </size>
-                </property>
-                <property name="frameShape">
-                 <enum>QFrame::Box</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Plain</enum>
-                </property>
-                <property name="segmentStyle">
-                 <enum>QLCDNumber::Flat</enum>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_6">
-                <property name="text">
-                 <string>Volt</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="2" column="0" rowspan="3" colspan="4">
-            <widget class="QGroupBox" name="groupBox_6">
-             <property name="minimumSize">
-              <size>
-               <width>303</width>
-               <height>292</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>303</width>
-               <height>292</height>
-              </size>
-             </property>
-             <property name="title">
-              <string/>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_3">
-              <item row="2" column="1">
-               <widget class="QLabel" name="label_4">
-                <property name="text">
-                 <string>Versorgungsspannung</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="4">
-               <widget class="QLabel" name="label_5">
-                <property name="text">
-                 <string>Mittelwert Ausgangssignal</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1" rowspan="3">
-               <widget class="QwtThermo" name="Thermo_Vcc">
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>250</height>
-                 </size>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="4">
-               <widget class="QwtThermo" name="Thermo_Ausgang">
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>250</height>
-                 </size>
-                </property>
-                <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
-                </property>
-                <property name="autoFillBackground">
-                 <bool>false</bool>
-                </property>
-                <property name="inputMethodHints">
-                 <set>Qt::ImhNone</set>
-                </property>
-                <property name="borderWidth">
-                 <number>2</number>
-                </property>
-                <property name="maxValue">
-                 <double>100.000000000000000</double>
-                </property>
-                <property name="minValue">
-                 <double>-100.000000000000000</double>
-                </property>
-                <property name="pipeWidth">
-                 <number>10</number>
-                </property>
-                <property name="value">
-                 <double>0.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="0" column="7">
-            <widget class="QLabel" name="label_12">
-             <property name="text">
-              <string>Abfragerate</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="6">
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Minimum</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="8">
-            <widget class="QComboBox" name="comboBox_Abfragerate"/>
-           </item>
-           <item row="1" column="1">
-            <widget class="QRadioButton" name="radioButton_Kanal1">
-             <property name="text">
-              <string>Kanal 1</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_2">
-             <property name="text">
-              <string>Kanalauswahl</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_11">
-             <property name="text">
-              <string>Auswahl COM Interface</string>
-             </property>
-            </widget>
-           </item>
            <item row="2" column="5" rowspan="3" colspan="4">
             <widget class="QGroupBox" name="groupBox_5">
              <property name="minimumSize">
@@ -662,35 +460,6 @@
              </layout>
             </widget>
            </item>
-           <item row="5" column="5" colspan="4">
-            <widget class="QSlider" name="horizontalSlider_Volume">
-             <property name="maximum">
-              <number>50</number>
-             </property>
-             <property name="singleStep">
-              <number>1</number>
-             </property>
-             <property name="pageStep">
-              <number>5</number>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="tickPosition">
-              <enum>QSlider::TicksAbove</enum>
-             </property>
-             <property name="tickInterval">
-              <number>5</number>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="3">
-            <widget class="QRadioButton" name="radioButton_Kanal2">
-             <property name="text">
-              <string>Kanal 2</string>
-             </property>
-            </widget>
-           </item>
            <item row="1" column="5" colspan="4">
             <widget class="QGroupBox" name="groupBox_9">
              <property name="title">
@@ -714,6 +483,61 @@
              </layout>
             </widget>
            </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_11">
+             <property name="text">
+              <string>Auswahl COM Interface</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="5" colspan="4">
+            <widget class="QSlider" name="horizontalSlider_Volume">
+             <property name="maximum">
+              <number>50</number>
+             </property>
+             <property name="singleStep">
+              <number>1</number>
+             </property>
+             <property name="pageStep">
+              <number>5</number>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="tickPosition">
+              <enum>QSlider::TicksAbove</enum>
+             </property>
+             <property name="tickInterval">
+              <number>5</number>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="7">
+            <widget class="QLabel" name="label_12">
+             <property name="text">
+              <string>Abfragerate</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="6">
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Minimum</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="0" column="8">
+            <widget class="QComboBox" name="comboBox_Abfragerate"/>
+           </item>
            <item row="0" column="1">
             <widget class="QComboBox" name="comboBox_COM">
              <property name="minimumSize">
@@ -729,6 +553,191 @@
              <property name="text">
               <string>Open</string>
              </property>
+            </widget>
+           </item>
+           <item row="5" column="0" colspan="4">
+            <widget class="QGroupBox" name="groupBox_7">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>50</height>
+              </size>
+             </property>
+             <property name="title">
+              <string/>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="QLCDNumber" name="lcdNumber_Vcc">
+                <property name="maximumSize">
+                 <size>
+                  <width>50</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="autoFillBackground">
+                 <bool>false</bool>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::Box</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Plain</enum>
+                </property>
+                <property name="lineWidth">
+                 <number>1</number>
+                </property>
+                <property name="midLineWidth">
+                 <number>0</number>
+                </property>
+                <property name="segmentStyle">
+                 <enum>QLCDNumber::Flat</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>Volt</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLCDNumber" name="lcdNumber_2_Ausgang">
+                <property name="maximumSize">
+                 <size>
+                  <width>50</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::Box</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Plain</enum>
+                </property>
+                <property name="segmentStyle">
+                 <enum>QLCDNumber::Flat</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_6">
+                <property name="text">
+                 <string>Volt</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="0" rowspan="3" colspan="4">
+            <widget class="QGroupBox" name="groupBox_6">
+             <property name="minimumSize">
+              <size>
+               <width>303</width>
+               <height>292</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>303</width>
+               <height>292</height>
+              </size>
+             </property>
+             <property name="title">
+              <string/>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_3">
+              <item row="2" column="1">
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>Versorgungsspannung</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="4">
+               <widget class="QLabel" name="label_5">
+                <property name="text">
+                 <string>Mittelwert Ausgangssignal</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1" rowspan="3">
+               <widget class="QwtThermo" name="Thermo_Vcc">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>250</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="4">
+               <widget class="QwtThermo" name="Thermo_Ausgang">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>250</height>
+                 </size>
+                </property>
+                <property name="layoutDirection">
+                 <enum>Qt::LeftToRight</enum>
+                </property>
+                <property name="autoFillBackground">
+                 <bool>false</bool>
+                </property>
+                <property name="inputMethodHints">
+                 <set>Qt::ImhNone</set>
+                </property>
+                <property name="borderWidth">
+                 <number>2</number>
+                </property>
+                <property name="maxValue">
+                 <double>100.000000000000000</double>
+                </property>
+                <property name="minValue">
+                 <double>-100.000000000000000</double>
+                </property>
+                <property name="pipeWidth">
+                 <number>10</number>
+                </property>
+                <property name="value">
+                 <double>0.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="1" column="0" colspan="3">
+            <widget class="QGroupBox" name="groupBox_8">
+             <property name="title">
+              <string/>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <item>
+               <widget class="QLabel" name="label_2">
+                <property name="text">
+                 <string>Kanalauswahl</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="radioButton_Kanal1">
+                <property name="text">
+                 <string>Kanal 1</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QRadioButton" name="radioButton_Kanal2">
+                <property name="text">
+                 <string>Kanal 2</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>
