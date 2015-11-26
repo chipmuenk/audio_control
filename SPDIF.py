@@ -501,6 +501,14 @@ class I2C:
         '''
         I2C-Bus lesen, Werte in die GUI ausgeben     
         '''
+        strStatus = str(data[0])
+        
+        try:
+            iStatus = int(strStatus, 16)
+        except:
+            iStatus = "Err"
+        uiplot.lcdNumber_Vcc.display(iStatus)
+        
         strV_in = str(data[1] + data[2])
         #print(strV_in)
         try:
