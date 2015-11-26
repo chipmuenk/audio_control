@@ -268,10 +268,12 @@ class I2C:
             for i in range(len(ValidComPorts)):
                 uiplot.comboBox_COM.addItem(ValidComPorts[i][1])
         com = uiplot.comboBox_COM.currentText()
-        if ("KEIN COM!" != com):
+        if ("KEIN COM!" == com):
             #print("Kein COM")
-        #else:
+            uiplot.statusMessage("Bitte COM Device anschliessen")
+        else:
             self.serialPort()
+            uiplot.statusBar().clear()
             
         if self.OpenPort:
             self.ser.write('Y41')               # Konfigurationsbefehle für ELV gemaess Bedienungsanleitung S. 11 Tab. 3
@@ -306,6 +308,8 @@ class I2C:
         if False == self.OpenPort:    
             try:
                 if 1 == self.Uebertragung:                                  #I2C
+#                    test = self.ser.isOpen()
+#                    print(test)                    
                     self.ser = serial.Serial(
                                              port=str(com),
                                              baudrate=self.BAUDRATE_I2C,
@@ -314,12 +318,15 @@ class I2C:
                                              bytesize=serial.EIGHTBITS
                                              )
                     self.OpenPort = True
-                    if False == self.ser.isOpen():
-                        try:
-                            self.ser.open()
-                            self.OpenPort = True
-                        except serial.SerialException:
-                            self.OpenPort = False
+#                    test = self.ser.isOpen()
+#                    print(test)
+#                    if False == test:
+#                        try:
+#                            self.ser.open()
+#                            self.OpenPort = True
+#                        except serial.SerialException:
+#                            self.OpenPort = False
+                    #print(self.OpenPort)
                 elif 2 == self.Uebertragung:                                #UART
                     self.ser = serial.Serial(
                                              port=str(com),
@@ -329,12 +336,12 @@ class I2C:
                                              bytesize=serial.EIGHTBITS
                                              )
                     self.OpenPort = True
-                    if False == self.ser.isOpen():
-                        try:
-                            self.ser.open()
-                            self.OpenPort = True
-                        except serial.SerialException:
-                            self.OpenPort = False
+#                    if False == self.ser.isOpen():
+#                        try:
+#                            self.ser.open()
+#                            self.OpenPort = True
+#                        except serial.SerialException:
+#                            self.OpenPort = False
                 uiplot.statusBar().clear()                             
             except serial.SerialException:
                 print("COM kann nicht geoeffnet werden")
@@ -383,6 +390,12 @@ class I2C:
         QtGui.QDialog.connect(uiplot.radioButton_Kanal1, QtCore.SIGNAL("clicked()"), lambda: self.auswahl_kanal(1))
         QtGui.QDialog.connect(uiplot.radioButton_Kanal2, QtCore.SIGNAL("clicked()"), lambda: self.auswahl_kanal(2))
         QtGui.QDialog.connect(uiplot.horizontalSlider_Volume, QtCore.SIGNAL('valueChanged(int)'), self.sendVolume)
+        QtGui.QDialog.connect(uiplot.comboBox_COM, QtCore.SIGNAL('currentIndexChanged(int)'), self.serClose)
+        
+    def serClose(self):
+        
+        self.OpenPort=False
+        self.ser.close()
         
     def sendMUX1(self):                                 #I2C
         """
