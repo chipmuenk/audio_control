@@ -511,7 +511,7 @@ class I2C:
             iStatus = int(strStatus, 16)
         except:
             iStatus = "Err"
-        uiplot.lcdNumber_Status(iStatus)
+        uiplot.lcdNumber_Status.display(iStatus)
         
         strV_in = str(data[1] + data[2])
         #print(strV_in)
