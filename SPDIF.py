@@ -186,18 +186,21 @@ class SPDIF:
         deviceList = []
         uiplot.comboBox_Audio_In.clear()
         self.p = pyaudio.PyAudio() # instantiate PyAudio, start PortAudio system + list devices
-        defaultInIdx = self.p.get_default_input_device_info()['index']        
-        #print("Defaultin", defaultInIdx)        
-        for i in range(self.p.get_device_count()):
-             deviceList.append(self.p.get_device_info_by_index(i))    
-             #print (deviceList[i])
-             if deviceList[i]['maxInputChannels'] > 0:
-                 if i == defaultInIdx:
-                     uiplot.comboBox_Audio_In.addItem('* '+deviceList[i]['name'], str(i))
-                     defaultInBoxIdx = uiplot.comboBox_Audio_In.currentIndex()
-                 else:
-                     uiplot.comboBox_Audio_In.addItem(deviceList[i]['name'], str(i))   
-        uiplot.comboBox_Audio_In.setCurrentIndex(defaultInBoxIdx) 
+        try:        
+            defaultInIdx = self.p.get_default_input_device_info()['index']        
+            #print("Defaultin", defaultInIdx)        
+            for i in range(self.p.get_device_count()):
+                 deviceList.append(self.p.get_device_info_by_index(i))    
+                 #print (deviceList[i])
+                 if deviceList[i]['maxInputChannels'] > 0:
+                     if i == defaultInIdx:
+                         uiplot.comboBox_Audio_In.addItem('* '+deviceList[i]['name'], str(i))
+                         defaultInBoxIdx = uiplot.comboBox_Audio_In.currentIndex()
+                     else:
+                         uiplot.comboBox_Audio_In.addItem(deviceList[i]['name'], str(i))   
+            uiplot.comboBox_Audio_In.setCurrentIndex(defaultInBoxIdx) 
+        except:
+            print("Kein Audio Eingang verfuegbar")
         
     def auswahlAnzeige(self, anz):
         """
@@ -443,6 +446,7 @@ class I2C:
         """                
         if self.OpenPort:
             self.ser.close()
+            self.OpenPort=False
             
         if 1 == uebertragung:
             self.Uebertragung = 1
@@ -507,7 +511,7 @@ class I2C:
             iStatus = int(strStatus, 16)
         except:
             iStatus = "Err"
-        uiplot.lcdNumber_Vcc.display(iStatus)
+        uiplot.lcdNumber_Status(iStatus)
         
         strV_in = str(data[1] + data[2])
         #print(strV_in)
